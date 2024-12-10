@@ -41,15 +41,10 @@ with tab:
     with tb3 :
         pdf_path = "تاثير الذكاء الاصطناعي على الصادرات.pdf"
         
-        with open(pdf_path, "rb") as file:
-            pdf_bytes = file.read()  # Indentation is correct here
-            Research = base64.b64encode(pdf_bytes).decode('utf-8')
-        
         st.markdown(
-            f"""
-            <iframe src="data:application/pdf;base64,{Research}" width="1000" height="700" type="application/pdf"></iframe>
-            """,
-            unsafe_allow_html=True)
+    f"[Open the PDF](./{pdf_path})",
+    unsafe_allow_html=True
+)
     with tb1 :
         st.write("""
 ### **اشراف:**
