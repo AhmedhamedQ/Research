@@ -41,10 +41,16 @@ with tab:
     with tb3 :
         pdf_path = "تاثير الذكاء الاصطناعي على الصادرات.pdf"
         
-        st.markdown(
-    f"[Open the PDF](./{pdf_path})",
-    unsafe_allow_html=True
-)
+        with open(pdf_path, "rb") as file:
+            pdf_bytes = file.read()
+
+# Display the PDF as a download button
+        st.download_button(
+            label="Download PDF",
+            data=pdf_bytes,
+            file_name="تاثير الذكاء الاصطناعي على الصادرات.pdf",
+            mime="application/pdf"
+        )
     with tb1 :
         st.write("""
 ### **اشراف:**
