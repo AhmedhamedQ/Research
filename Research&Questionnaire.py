@@ -461,15 +461,15 @@ with tab2 :
     pdf_path = "استبيان حول الصادرات وتأثير الذكاء الاصطناعي والتحول الرقمي.pdf"
     
     with open(pdf_path, "rb") as file:
-        pdf_bytes = file.read()  # Indentation is correct here
-        Questionnaire = base64.b64encode(pdf_bytes).decode('utf-8')
-    
-    st.markdown(
-        f"""
-        <iframe src="data:application/pdf;base64,{Questionnaire}" width="1000" height="700" type="application/pdf"></iframe>
-        """,
-        unsafe_allow_html=True
-    )
+    pdf_bytes = file.read()
+
+# Display the PDF as a download button
+st.download_button(
+    label="Download PDF",
+    data=pdf_bytes,
+    file_name="استبيان حول الصادرات وتأثير الذكاء الاصطناعي والتحول الرقمي.pdf",
+    mime="application/pdf"
+)
 with tab3 :
     st.header('الاحصائيات الاجمالية')    
     full_votes = get_votes(df[df.columns[5:]])
