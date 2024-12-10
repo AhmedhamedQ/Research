@@ -461,15 +461,15 @@ with tab2 :
     pdf_path = "استبيان حول الصادرات وتأثير الذكاء الاصطناعي والتحول الرقمي.pdf"
     
     with open(pdf_path, "rb") as file:
-    pdf_bytes = file.read()
+        pdf_bytes = file.read()
 
 # Display the PDF as a download button
-st.download_button(
-    label="Download PDF",
-    data=pdf_bytes,
-    file_name="استبيان حول الصادرات وتأثير الذكاء الاصطناعي والتحول الرقمي.pdf",
-    mime="application/pdf"
-)
+    st.download_button(
+        label="Download PDF",
+        data=pdf_bytes,
+        file_name="استبيان حول الصادرات وتأثير الذكاء الاصطناعي والتحول الرقمي.pdf",
+        mime="application/pdf"
+    )
 with tab3 :
     st.header('الاحصائيات الاجمالية')    
     full_votes = get_votes(df[df.columns[5:]])
