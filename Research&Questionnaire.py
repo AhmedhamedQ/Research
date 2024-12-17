@@ -30,12 +30,56 @@ def get_votes (df):
     votes_ = votes['votes'].apply(votes_edit)
     return votes_
 
+
+def retrun_no_votes(x):
+    if x =='ارفض بشدة':
+        return 1
+    elif x == 'ارفض':
+        return 2
+    elif x == 'محايد':
+        return 3
+    elif x =='أوافق':
+        return 4
+    else :
+        return 5
+
+def return_no_status(x):
+    if x == 'طالب':
+        return 1 
+    elif x == 'خريج':
+        return 2
+def return_no_specialist(x):
+    if x =='تجارة':
+        return 1 
+    elif x =='هندسة':
+        return 2
+    elif x == 'حاسبات':
+        return 3 
+    elif x == 'اداب':
+        return 4 
+    elif x == 'حقوق':
+        return 5 
+    else :
+        return 6
+def return_no_df(df):
+    for column in df.columns[5:]:
+        df[column] = df[column].apply(retrun_no_votes)
+    df['status'] = df['status'].apply(return_no_status)
+    df['Education_level'] = df['Education_level'].apply(return_no_specialist)
+
+
+
+
 Participants = df[['ResponseID', 'Date', 'Age', 'Education_level', 'status']]
 category_1 = df[['ResponseID', 'Date', 'Age', 'Education_level', 'status', 'Q1', 'Q2','Q3', 'Q4', 'Q5', 'Q6']] 
 category_2 = df[['ResponseID', 'Date', 'Age', 'Education_level', 'status', 'Q7', 'Q8', 'Q9', 'Q10', 'Q11', 'Q12']]
 category_3 = df[['ResponseID', 'Date', 'Age', 'Education_level', 'status','Q13','Q14', 'Q15', 'Q16', 'Q17']]
 category_4 = df[['ResponseID', 'Date', 'Age', 'Education_level', 'status','Q18', 'Q19', 'Q20', 'Q21', 'Q22']]
-tab , tab1 ,tab2 , tab3,tab4 = st.tabs(['البحث','شرح الاستبيان','الاستبيان','احصائيات اجمالية','احصائيات تفصيلية'])
+
+but1 = st.sidebar.button('البيانات بشكل تصنيفي')
+but2 = st.sidebar.button('البيانات بشكل رقمي')
+
+tab , tab1 = st.tabs(['البحث','الاستبيان'])
 with tab:
     tb1 , tb2 ,tb3 = st.tabs(['القائمين على البحث','شرح البحث','نسخة من البحث'])
     with tb3 :
@@ -66,6 +110,8 @@ with tab:
         tb2_1 , tb2_2 = st.tabs(['المقدمة','ملخص الفصول'])
         with tb2_1:
             st.write("""
+
+## اثر الذكاء الاصطناعي على تنمية الصادرات
 ### **الملخص**
 
 أصبحت الصادرات جزءاً حيوياً من الاقتصاد العالمي، حيث تساهم في تعزيز النمو الاقتصادي وجذب الاستثمارات. في السنوات الأخيرة، برزت تقنيات الذكاء الاصطناعي كعامل مؤثر على أنشطة الصادرات بفضل قدرتها على تحسين الكفاءة، وتقديم رؤى متقدمة، وتعزيز قرارات الشركات والمصدرين. يهدف هذا البحث إلى استكشاف كيف يمكن للذكاء الاصطناعي أن يلعب دوراً محوريًا في تطوير الصادرات وتحسين قدرتها التنافسية من خلال تقنيات تحليل البيانات والتنبؤ وتطوير العمليات اللوجستية.
@@ -417,7 +463,9 @@ with tab:
 
 #__________________________________________________________________________
 with tab1 :
-    st.write("""
+    ta1 , ta2 , ta3 = st.tabs(['شرح الاستبيان','نسخه من الاستبيان','احصائيات الاستبيان'])
+    with ta1 :
+        st.write("""
 ### **استبيان عن تأثير الذكاء الاصطناعي والتحول الرقمي على الصادرات**   
 الاستبيان الذي تم إعداده يهدف إلى فهم رؤى وآراء المشاركين حول ثلاثة مواضيع رئيسية: **أهمية الصادرات، تأثير الذكاء الاصطناعي، والتحديات والفرص المرتبطة بالتحول الرقمي في مجال التصدير**. الاستبيان مصمم بطريقة تمكن المشاركين من التعبير عن درجة موافقتهم باستخدام مقياس ليكرت الخماسي، الذي يتيح إجابات تتراوح بين "أوافق بشدة" و"أرفض بشدة"، وهذا يوفر رؤية واضحة حول توافقهم أو اختلافهم مع كل عبارة.
 
@@ -457,359 +505,605 @@ with tab1 :
 ---
     """)
 #__________________________________________________________________________________________________________
-with tab2 :
-    pdf_path = "استبيان حول الصادرات وتأثير الذكاء الاصطناعي والتحول الرقمي.pdf"
+    with ta2 :
+        pdf_path = "استبيان حول الصادرات وتأثير الذكاء الاصطناعي والتحول الرقمي.pdf"
+        
+        with open(pdf_path, "rb") as file:
+            pdf_bytes = file.read()
     
-    with open(pdf_path, "rb") as file:
-        pdf_bytes = file.read()
+    # Display the PDF as a download button
+        st.download_button(
+            label="Download PDF",
+            data=pdf_bytes,
+            file_name="استبيان حول الصادرات وتأثير الذكاء الاصطناعي والتحول الرقمي.pdf",
+            mime="application/pdf"
+        )
+    if but1 :   
+        with ta3 :
+            tabc1 , tabc2 , tabc3, tabc4,tabc5 = st.tabs(['القسم الاول:اهمية الصادرات','القسم الثاني:الذكاء الاصطناعي كعامل تطور','القسم الثالث:تاثير الذكاء الاصطناعي علر الصادرات','القسم الربع:التحديات والفرص في ظل التحول الرقمي','الاحصائيات الاجمالية'])
+            for df in [category_1,category_2,category_3,category_4]:
+                for column in df.columns[5:]:
+                    df[column] = df[column].apply(votes_edit)
 
-# Display the PDF as a download button
-    st.download_button(
-        label="Download PDF",
-        data=pdf_bytes,
-        file_name="استبيان حول الصادرات وتأثير الذكاء الاصطناعي والتحول الرقمي.pdf",
-        mime="application/pdf"
-    )
-with tab3 :
-    st.header('الاحصائيات الاجمالية')    
-    full_votes = get_votes(df[df.columns[5:]])
-    st.subheader('احصائيات المشاركون')
-    co1 , co2, co3 = st.columns([1,0.2,1])
-    with co1 :
-        st.subheader('احصائيات الحالة والدراسات') 
-        st.dataframe(Participants.describe(include='object'))
-        age = Participants[['Age']].describe()
-        st.subheader('احصائيات العمر')
-        st.dataframe(age.transpose())
-    with co3 :
-        st.plotly_chart(px.pie(Participants,names='status',title='نسب الحالة التعليمية'),use_container_width=True)
-    st.plotly_chart(px.histogram(Participants,'Education_level',color = 'Education_level',text_auto=True,title='عدد الطلاب بالنسبة لكل دراسة'),use_container_width=True)
-    st.write('---')
-    st.subheader('احصائيات الموافقة والرفض الاجمالية')
-
-    col1 ,col3 = st.columns([1,1])
-    with col1 :
-        st.plotly_chart(px.histogram(full_votes,x = 'votes',color = 'votes',text_auto = True,title = "الاعداد"),use_container_width=True)
-    with col3 :
-        st.plotly_chart(px.pie(full_votes,names='votes',title ='النسب'),use_container_width=True)
-    st.write('---')
-
-
-#_______________________________________________    
-    st.header('الاحصائيات الاجمالية لكل قسم في الاستبيان')
-
-    st.subheader("القسم الاول: اهمية الصادرات")
-    st.write('---')
-    cat1_votes = get_votes(category_1[category_1.columns[5:]])
-    c1 ,c2 = st.columns([1,1])
-    with c1 :
-        st.plotly_chart(px.histogram(cat1_votes,x = 'votes',color = 'votes',text_auto = True,title = "الاعداد"),use_container_width=True)
-    with c2:
-        st.plotly_chart(px.pie(cat1_votes,names='votes',title ='النسب'),use_container_width=True)
-    st.write('---')
-
-#__________________________________________________
-    st.subheader("القسم الثاني:الذكاء الاصطناعي كعامل تطور")
-    st.write('---')
-    cat2_votes = get_votes(category_2[category_2.columns[5:]])
-    c12 ,c22 = st.columns([1,1])
-    with c12 :
-        st.plotly_chart(px.histogram(cat2_votes,x = 'votes',color = 'votes',text_auto = True,title = "الاعداد"),use_container_width=True)
-    with c22:
-        st.plotly_chart(px.pie(cat2_votes,names='votes',title ='النسب'),use_container_width=True)
-    st.write('---')
-#______________________________________________________
-    st.subheader("القسم الثالث:تأثير الذكاء الاصطناعي على الصادرات")
-    st.write('---')
-    cat3_votes = get_votes(category_3[category_3.columns[5:]])
-    c13 ,c23 = st.columns([1,1])
-    with c13 :
-        st.plotly_chart(px.histogram(cat3_votes,x = 'votes',color = 'votes',text_auto = True,title = "الاعداد"),use_container_width=True)
-    with c23:
-        st.plotly_chart(px.pie(cat3_votes,names='votes',title ='النسب'),use_container_width=True)
-    st.write('---')
-#________________________________________________
-    st.subheader("القسم الرابع:التحديات والفرص في ظل التحول الرقمي")
-    st.write('---')
-    cat4_votes = get_votes(category_4[category_4.columns[5:]])
-    c14 ,c24 = st.columns([1,1])
-    with c14 :
-        st.plotly_chart(px.histogram(cat4_votes,x = 'votes',color = 'votes',text_auto = True,title = "الاعداد"),use_container_width=True)
-    with c24:
-        st.plotly_chart(px.pie(cat4_votes,names='votes',title ='النسب'),use_container_width=True)
-    st.write('---')   
-
-#________________________________________________________________________________________________________
-with tab4 :
-    tabc1 , tabc2 , tabc3, tabc4 = st.tabs(['القسم الاول:اهمية الصادرات','القسم الثاني:الذكاء الاصطناعي كعامل تطور','القسم الثالث:تاثير الذكاء الاصطناعي علر الصادرات','القسم الربع:التحديات والفرص في ظل التحول الرقمي'])
-    for df in [category_1,category_2,category_3,category_4]:
-        for column in df.columns[5:]:
-            df[column] = df[column].apply(votes_edit)
-    #______________________________________________________________________________________________________________        
-    with tabc1 :
-        st.header('اهمية الصادرات')
-        st.write('هذا القسم يتكون من 6 اسالة')
-        st.write('---')
-        q1_1,q1_2 = st.columns([1,1])
-        q1_gr =category_1.groupby(['Q1','Education_level']).size().unstack(fill_value=0)
-        #_________________________________________________________________________________
-        with q1_1:
-            st.subheader('1. تعتبر الصادرات من أهم ركائز الاقتصاد القومي.')
-            st.dataframe(q1_gr,use_container_width=True)
-        with q1_2 :
-            st.plotly_chart(px.pie(category_1,names='Q1',title = 'النسبة %'),use_container_width=True)    
-        st.plotly_chart(px.bar(q1_gr , y=q1_gr.columns, barmode='group',title='النخصص مع عدد الموافقة',text_auto=True),use_container_width=True)
-        st.write('---')
-        #____________________________________________________________________________________
-        q2_1,q2_2 = st.columns([1,1])
-        q2_gr =category_1.groupby(['Q2','Education_level']).size().unstack(fill_value=0)
-        with q2_1:
-            st.subheader('2. الصادرات تساهم بشكل كبير في توفير العملات الأجنبية للدولة.')
-            st.dataframe(q2_gr,use_container_width=True)
-        with q2_2 :
-            st.plotly_chart(px.pie(category_1,names='Q2',title = 'النسبة %'),use_container_width=True)    
-        st.plotly_chart(px.bar(q2_gr , y=q2_gr.columns, barmode='group',title='النخصص مع عدد الموافقة',text_auto=True),use_container_width=True)
-        st.write('---')
-        #____________________________________________________________________________________
-        q3_1,q3_2 = st.columns([1,1])
-        q3_gr =category_1.groupby(['Q3','Education_level']).size().unstack(fill_value=0)
-        with q3_1:
-            st.subheader('3. الصادرات الصناعية تسهم في تحسين جودة المنتجات الوطنية.')
-            st.dataframe(q3_gr,use_container_width=True)
-        with q3_2 :
-            st.plotly_chart(px.pie(category_1,names='Q3',title = 'النسبة %'),use_container_width=True)    
-        st.plotly_chart(px.bar(q3_gr , y=q3_gr.columns, barmode='group',title='النخصص مع عدد الموافقة',text_auto=True),use_container_width=True)
-        st.write('---')
-
-        #____________________________________________________________________________________
-        q4_1,q4_2 = st.columns([1,1])
-        q4_gr =category_1.groupby(['Q4','Education_level']).size().unstack(fill_value=0)
-        with q4_1:
-            st.subheader('4. تؤدي الصادرات الصناعية إلى زيادة فرص العمل ودعم القوى العاملة المحلية.')
-            st.dataframe(q3_gr,use_container_width=True)
-        with q4_2 :
-            st.plotly_chart(px.pie(category_1,names='Q4',title = 'النسبة %'),use_container_width=True)    
-        st.plotly_chart(px.bar(q4_gr , y=q4_gr.columns, barmode='group',title='النخصص مع عدد الموافقة',text_auto=True),use_container_width=True)
-        st.write('---')
-        #____________________________________________________________________________________
-        q5_1,q5_2 = st.columns([1,1])
-        q5_gr =category_1.groupby(['Q5','Education_level']).size().unstack(fill_value=0)
-        with q5_1:
-            st.subheader('5. الصادرات الخدمية، مثل السياحة وتكنولوجيا المعلومات، تساهم في تعزيز سمعة الدولة عالميًا.')
-            st.dataframe(q5_gr,use_container_width=True)
-        with q5_2 :
-            st.plotly_chart(px.pie(category_1,names='Q5',title = 'النسبة %'),use_container_width=True)    
-        st.plotly_chart(px.bar(q5_gr , y=q5_gr.columns, barmode='group',title='النخصص مع عدد الموافقة',text_auto=True),use_container_width=True)
-        st.write('---')
-        #____________________________________________________________________________________
-        q6_1,q6_2 = st.columns([1,1])
-        q6_gr =category_1.groupby(['Q6','Education_level']).size().unstack(fill_value=0)
-        with q6_1:
-            st.subheader('6. الدول التي تعتمد على تنوع في الصادرات تكون أقل عرضة لتقلبات الاقتصاد العالمي.')
-            st.dataframe(q6_gr,use_container_width=True)
-        with q6_2 :
-            st.plotly_chart(px.pie(category_1,names='Q6',title = 'النسبة %'),use_container_width=True)    
-        st.plotly_chart(px.bar(q6_gr , y=q6_gr.columns, barmode='group',title='النخصص مع عدد الموافقة',text_auto=True),use_container_width=True)
-        st.write('---')
-    with tabc2 :
-        st.header('الذكاء الاصطناعي كعامل تطور')
-        st.write('هذا القسم يتكون من 6 اسالة')
-        st.write('---')
-
-        #_______________________________________________________________________________
-        q7_1,q7_2 = st.columns([1,1])
-        q7_gr = category_2.groupby(['Q7','Education_level']).size().unstack(fill_value=0)
-        with q7_1:
-            st.subheader('7. الذكاء الاصطناعي سيحدث تغييرات جذرية في قطاعات متعددة، منها القطاع الصناعي.')
-            st.dataframe(q7_gr,use_container_width=True)
-        with q7_2 :
-            st.plotly_chart(px.pie(category_2,names='Q7',title = 'النسبة %'),use_container_width=True)    
-        st.plotly_chart(px.bar(q7_gr , y=q7_gr.columns, barmode='group',title='النخصص مع عدد الموافقة',text_auto=True),use_container_width=True)
-        st.write('---')
+            
     
-
-        #_______________________________________________________________________________
-        q8_1,q8_2 = st.columns([1,1])
-        q8_gr = category_2.groupby(['Q8','Education_level']).size().unstack(fill_value=0)
-        with q8_1:
-            st.subheader('8. الذكاء الاصطناعي سيساهم في تطوير تقنيات الإنتاج، مما يؤدي إلى تحسين جودة المنتجات.')
-            st.dataframe(q8_gr,use_container_width=True)
-        with q8_2 :
-            st.plotly_chart(px.pie(category_2,names='Q8',title = 'النسبة %'),use_container_width=True)    
-        st.plotly_chart(px.bar(q8_gr , y=q8_gr.columns, barmode='group',title='النخصص مع عدد الموافقة',text_auto=True),use_container_width=True)
-        st.write('---')
+            #______________________________________________________________________________________________________________        
+            with tabc1 :
+                st.header('اهمية الصادرات')
+                st.write('هذا القسم يتكون من 6 اسالة')
+                st.write('---')
+                q1_1,q1_2 = st.columns([1,1])
+                q1_gr =category_1.groupby(['Q1','Education_level']).size().unstack(fill_value=0)
+                    #_________________________________________________________________________________
+                with q1_1:
+                    st.subheader('1. تعتبر الصادرات من أهم ركائز الاقتصاد القومي.')
+                    st.dataframe(q1_gr,use_container_width=True)
+                with q1_2 :
+                    st.plotly_chart(px.pie(category_1,names='Q1',title = 'النسبة %'),use_container_width=True)    
+                st.plotly_chart(px.bar(q1_gr , y=q1_gr.columns, barmode='group',title='النخصص مع عدد الموافقة',text_auto=True),use_container_width=True)
+                st.write('---')
+                #____________________________________________________________________________________
+                q2_1,q2_2 = st.columns([1,1])
+                q2_gr =category_1.groupby(['Q2','Education_level']).size().unstack(fill_value=0)
+                with q2_1:
+                    st.subheader('2. الصادرات تساهم بشكل كبير في توفير العملات الأجنبية للدولة.')
+                    st.dataframe(q2_gr,use_container_width=True)
+                with q2_2 :
+                    st.plotly_chart(px.pie(category_1,names='Q2',title = 'النسبة %'),use_container_width=True)    
+                st.plotly_chart(px.bar(q2_gr , y=q2_gr.columns, barmode='group',title='النخصص مع عدد الموافقة',text_auto=True),use_container_width=True)
+                st.write('---')
+                #____________________________________________________________________________________
+                q3_1,q3_2 = st.columns([1,1])
+                q3_gr =category_1.groupby(['Q3','Education_level']).size().unstack(fill_value=0)
+                with q3_1:
+                    st.subheader('3. الصادرات الصناعية تسهم في تحسين جودة المنتجات الوطنية.')
+                    st.dataframe(q3_gr,use_container_width=True)
+                with q3_2 :
+                    st.plotly_chart(px.pie(category_1,names='Q3',title = 'النسبة %'),use_container_width=True)    
+                st.plotly_chart(px.bar(q3_gr , y=q3_gr.columns, barmode='group',title='النخصص مع عدد الموافقة',text_auto=True),use_container_width=True)
+                st.write('---')
     
-
-        #_______________________________________________________________________________
-        q9_1,q9_2 = st.columns([1,1])
-        q9_gr = category_2.groupby(['Q9','Education_level']).size().unstack(fill_value=0)
-        with q9_1:
-            st.subheader('9. الذكاء الاصطناعي يوفر إمكانيات كبيرة للتنبؤ بالاتجاهات السوقية ودراسة احتياجات العملاء.')
-            st.dataframe(q9_gr,use_container_width=True)
-        with q9_2 :
-            st.plotly_chart(px.pie(category_2,names='Q9',title = 'النسبة %'),use_container_width=True)    
-        st.plotly_chart(px.bar(q9_gr , y=q9_gr.columns, barmode='group',title='النخصص مع عدد الموافقة',text_auto=True),use_container_width=True)
-        st.write('---')
+                #____________________________________________________________________________________
+                q4_1,q4_2 = st.columns([1,1])
+                q4_gr =category_1.groupby(['Q4','Education_level']).size().unstack(fill_value=0)
+                with q4_1:
+                    st.subheader('4. تؤدي الصادرات الصناعية إلى زيادة فرص العمل ودعم القوى العاملة المحلية.')
+                    st.dataframe(q3_gr,use_container_width=True)
+                with q4_2 :
+                    st.plotly_chart(px.pie(category_1,names='Q4',title = 'النسبة %'),use_container_width=True)    
+                st.plotly_chart(px.bar(q4_gr , y=q4_gr.columns, barmode='group',title='النخصص مع عدد الموافقة',text_auto=True),use_container_width=True)
+                st.write('---')
+                #____________________________________________________________________________________
+                q5_1,q5_2 = st.columns([1,1])
+                q5_gr =category_1.groupby(['Q5','Education_level']).size().unstack(fill_value=0)
+                with q5_1:
+                    st.subheader('5. الصادرات الخدمية، مثل السياحة وتكنولوجيا المعلومات، تساهم في تعزيز سمعة الدولة عالميًا.')
+                    st.dataframe(q5_gr,use_container_width=True)
+                with q5_2 :
+                    st.plotly_chart(px.pie(category_1,names='Q5',title = 'النسبة %'),use_container_width=True)    
+                st.plotly_chart(px.bar(q5_gr , y=q5_gr.columns, barmode='group',title='النخصص مع عدد الموافقة',text_auto=True),use_container_width=True)
+                st.write('---')
+                #____________________________________________________________________________________
+                q6_1,q6_2 = st.columns([1,1])
+                q6_gr =category_1.groupby(['Q6','Education_level']).size().unstack(fill_value=0)
+                with q6_1:
+                    st.subheader('6. الدول التي تعتمد على تنوع في الصادرات تكون أقل عرضة لتقلبات الاقتصاد العالمي.')
+                    st.dataframe(q6_gr,use_container_width=True)
+                with q6_2 :
+                    st.plotly_chart(px.pie(category_1,names='Q6',title = 'النسبة %'),use_container_width=True)    
+                st.plotly_chart(px.bar(q6_gr , y=q6_gr.columns, barmode='group',title='النخصص مع عدد الموافقة',text_auto=True),use_container_width=True)
+                st.write('---')
+            with tabc2 :
+                st.header('الذكاء الاصطناعي كعامل تطور')
+                st.write('هذا القسم يتكون من 6 اسالة')
+                st.write('---')
     
-
-        #_______________________________________________________________________________
-        q10_1,q10_2 = st.columns([1,1])
-        q10_gr = category_2.groupby(['Q10','Education_level']).size().unstack(fill_value=0)
-        with q10_1:
-            st.subheader('10. استخدام الذكاء الاصطناعي في الصادرات قد يساعد في تقليل المخاطر المالية.')
-            st.dataframe(q10_gr,use_container_width=True)
-        with q10_2 :
-            st.plotly_chart(px.pie(category_2,names='Q10',title = 'النسبة %'),use_container_width=True)    
-        st.plotly_chart(px.bar(q10_gr , y=q10_gr.columns, barmode='group',title='النخصص مع عدد الموافقة',text_auto=True),use_container_width=True)
-        st.write('---')
+                #_______________________________________________________________________________
+                q7_1,q7_2 = st.columns([1,1])
+                q7_gr = category_2.groupby(['Q7','Education_level']).size().unstack(fill_value=0)
+                with q7_1:
+                    st.subheader('7. الذكاء الاصطناعي سيحدث تغييرات جذرية في قطاعات متعددة، منها القطاع الصناعي.')
+                    st.dataframe(q7_gr,use_container_width=True)
+                with q7_2 :
+                    st.plotly_chart(px.pie(category_2,names='Q7',title = 'النسبة %'),use_container_width=True)    
+                st.plotly_chart(px.bar(q7_gr , y=q7_gr.columns, barmode='group',title='النخصص مع عدد الموافقة',text_auto=True),use_container_width=True)
+                st.write('---')
+            
     
-
-        #_______________________________________________________________________________
-        q11_1,q11_2 = st.columns([1,1])
-        q11_gr = category_2.groupby(['Q11','Education_level']).size().unstack(fill_value=0)
-        with q11_1:
-            st.subheader('11. الذكاء الاصطناعي قد يزيد من التفاوت الاجتماعي بسبب التأثير على بعض المهن التقليدية.')
-            st.dataframe(q11_gr,use_container_width=True)
-        with q11_2 :
-            st.plotly_chart(px.pie(category_2,names='Q11',title = 'النسبة %'),use_container_width=True)    
-        st.plotly_chart(px.bar(q11_gr , y=q11_gr.columns, barmode='group',title='النخصص مع عدد الموافقة',text_auto=True),use_container_width=True)
-        st.write('---')
+                #_______________________________________________________________________________
+                q8_1,q8_2 = st.columns([1,1])
+                q8_gr = category_2.groupby(['Q8','Education_level']).size().unstack(fill_value=0)
+                with q8_1:
+                    st.subheader('8. الذكاء الاصطناعي سيساهم في تطوير تقنيات الإنتاج، مما يؤدي إلى تحسين جودة المنتجات.')
+                    st.dataframe(q8_gr,use_container_width=True)
+                with q8_2 :
+                    st.plotly_chart(px.pie(category_2,names='Q8',title = 'النسبة %'),use_container_width=True)    
+                st.plotly_chart(px.bar(q8_gr , y=q8_gr.columns, barmode='group',title='النخصص مع عدد الموافقة',text_auto=True),use_container_width=True)
+                st.write('---')
+            
     
-
-        #_______________________________________________________________________________
-        q12_1,q12_2 = st.columns([1,1])
-        q12_gr = category_2.groupby(['Q12','Education_level']).size().unstack(fill_value=0)
-        with q12_1:
-            st.subheader('12. الذكاء الاصطناعي يجب أن يُستثمر لتطوير موارد بشرية قادرة على التكيف مع التكنولوجيا.')
-            st.dataframe(q12_gr,use_container_width=True)
-        with q12_2 :
-            st.plotly_chart(px.pie(category_2,names='Q12',title = 'النسبة %'),use_container_width=True)    
-        st.plotly_chart(px.bar(q12_gr , y=q12_gr.columns, barmode='group',title='النخصص مع عدد الموافقة',text_auto=True),use_container_width=True)
-        st.write('---')
-    with tabc3 :
-        st.header('تاثير الذكاء الاصطناعي على الصادرات')
-        st.write('هذا القسم يتكون من 5 اسالة')
-        st.write('---')
-
-
-        #_______________________________________________________________________________
-        q13_1,q13_2 = st.columns([1,1])
-        q13_gr = category_3.groupby(['Q13','Education_level']).size().unstack(fill_value=0)
-        with q13_1:
-            st.subheader('13. الذكاء الاصطناعي يمكن أن يسهم في تحسين عمليات الإنتاج وتحقيق مخرجات عالية الجودة.')
-            st.dataframe(q13_gr,use_container_width=True)
-        with q13_2 :
-            st.plotly_chart(px.pie(category_3,names='Q13',title = 'النسبة %'),use_container_width=True)    
-        st.plotly_chart(px.bar(q13_gr , y=q13_gr.columns, barmode='group',title='النخصص مع عدد الموافقة',text_auto=True),use_container_width=True)
-        st.write('---')
+                #_______________________________________________________________________________
+                q9_1,q9_2 = st.columns([1,1])
+                q9_gr = category_2.groupby(['Q9','Education_level']).size().unstack(fill_value=0)
+                with q9_1:
+                    st.subheader('9. الذكاء الاصطناعي يوفر إمكانيات كبيرة للتنبؤ بالاتجاهات السوقية ودراسة احتياجات العملاء.')
+                    st.dataframe(q9_gr,use_container_width=True)
+                with q9_2 :
+                    st.plotly_chart(px.pie(category_2,names='Q9',title = 'النسبة %'),use_container_width=True)    
+                st.plotly_chart(px.bar(q9_gr , y=q9_gr.columns, barmode='group',title='النخصص مع عدد الموافقة',text_auto=True),use_container_width=True)
+                st.write('---')
+            
     
-
-        #_______________________________________________________________________________
-        q14_1,q14_2 = st.columns([1,1])
-        q14_gr = category_3.groupby(['Q14','Education_level']).size().unstack(fill_value=0)
-        with q14_1:
-            st.subheader('14. الذكاء الاصطناعي يسهم في تعزيز القدرة التنافسية للمنتجات المحلية في الأسواق العالمية.')
-            st.dataframe(q14_gr,use_container_width=True)
-        with q14_2 :
-            st.plotly_chart(px.pie(category_3,names='Q14',title = 'النسبة %'),use_container_width=True)    
-        st.plotly_chart(px.bar(q14_gr , y=q14_gr.columns, barmode='group',title='النخصص مع عدد الموافقة',text_auto=True),use_container_width=True)
-        st.write('---')
+                #_______________________________________________________________________________
+                q10_1,q10_2 = st.columns([1,1])
+                q10_gr = category_2.groupby(['Q10','Education_level']).size().unstack(fill_value=0)
+                with q10_1:
+                    st.subheader('10. استخدام الذكاء الاصطناعي في الصادرات قد يساعد في تقليل المخاطر المالية.')
+                    st.dataframe(q10_gr,use_container_width=True)
+                with q10_2 :
+                    st.plotly_chart(px.pie(category_2,names='Q10',title = 'النسبة %'),use_container_width=True)    
+                st.plotly_chart(px.bar(q10_gr , y=q10_gr.columns, barmode='group',title='النخصص مع عدد الموافقة',text_auto=True),use_container_width=True)
+                st.write('---')
+            
     
-
-        #_______________________________________________________________________________
-        q15_1,q15_2 = st.columns([1,1])
-        q15_gr = category_3.groupby(['Q15','Education_level']).size().unstack(fill_value=0)
-        with q15_1:
-            st.subheader('15. استخدام الذكاء الاصطناعي في التسويق الدولي يساعد في زيادة الطلب على المنتجات الوطنية.')
-            st.dataframe(q15_gr,use_container_width=True)
-        with q15_2 :
-            st.plotly_chart(px.pie(category_3,names='Q15',title = 'النسبة %'),use_container_width=True)    
-        st.plotly_chart(px.bar(q15_gr , y=q15_gr.columns, barmode='group',title='النخصص مع عدد الموافقة',text_auto=True),use_container_width=True)
-        st.write('---')
+                #_______________________________________________________________________________
+                q11_1,q11_2 = st.columns([1,1])
+                q11_gr = category_2.groupby(['Q11','Education_level']).size().unstack(fill_value=0)
+                with q11_1:
+                    st.subheader('11. الذكاء الاصطناعي قد يزيد من التفاوت الاجتماعي بسبب التأثير على بعض المهن التقليدية.')
+                    st.dataframe(q11_gr,use_container_width=True)
+                with q11_2 :
+                    st.plotly_chart(px.pie(category_2,names='Q11',title = 'النسبة %'),use_container_width=True)    
+                st.plotly_chart(px.bar(q11_gr , y=q11_gr.columns, barmode='group',title='النخصص مع عدد الموافقة',text_auto=True),use_container_width=True)
+                st.write('---')
+            
     
-
-        #_______________________________________________________________________________
-        q16_1,q16_2 = st.columns([1,1])
-        q16_gr = category_3.groupby(['Q16','Education_level']).size().unstack(fill_value=0)
-        with q16_1:
-            st.subheader('16. الذكاء الاصطناعي يسهم في دعم اللوجستيات وسلاسل التوريد لتسريع عمليات التصدير.')
-            st.dataframe(q16_gr,use_container_width=True)
-        with q16_2 :
-            st.plotly_chart(px.pie(category_3,names='Q16',title = 'النسبة %'),use_container_width=True)    
-        st.plotly_chart(px.bar(q16_gr , y=q16_gr.columns, barmode='group',title='النخصص مع عدد الموافقة',text_auto=True),use_container_width=True)
-        st.write('---')
+                #_______________________________________________________________________________
+                q12_1,q12_2 = st.columns([1,1])
+                q12_gr = category_2.groupby(['Q12','Education_level']).size().unstack(fill_value=0)
+                with q12_1:
+                    st.subheader('12. الذكاء الاصطناعي يجب أن يُستثمر لتطوير موارد بشرية قادرة على التكيف مع التكنولوجيا.')
+                    st.dataframe(q12_gr,use_container_width=True)
+                with q12_2 :
+                    st.plotly_chart(px.pie(category_2,names='Q12',title = 'النسبة %'),use_container_width=True)    
+                st.plotly_chart(px.bar(q12_gr , y=q12_gr.columns, barmode='group',title='النخصص مع عدد الموافقة',text_auto=True),use_container_width=True)
+                st.write('---')
+            with tabc3 :
+                st.header('تاثير الذكاء الاصطناعي على الصادرات')
+                st.write('هذا القسم يتكون من 5 اسالة')
+                st.write('---')
     
-
-        #_______________________________________________________________________________
-        q17_1,q17_2 = st.columns([1,1])
-        q17_gr = category_3.groupby(['Q17','Education_level']).size().unstack(fill_value=0)
-        with q17_1:
-            st.subheader('17. تطبيق الذكاء الاصطناعي في الصادرات الخدمية، مثل التجارة الإلكترونية، يوفر فرصًا جديدة للتوسع.')
-            st.dataframe(q17_gr,use_container_width=True)
-        with q17_2 :
-            st.plotly_chart(px.pie(category_3,names='Q17',title = 'النسبة %'),use_container_width=True)    
-        st.plotly_chart(px.bar(q17_gr , y=q17_gr.columns, barmode='group',title='النخصص مع عدد الموافقة',text_auto=True),use_container_width=True)
-        st.write('---')
-    with tabc4 :
-        st.header('التحديات والفرص في ظل التحول الرقمي')
-        st.write('هذا القسم يتكون من 5 اسالة')
-        st.write('---')
-
-        #_______________________________________________________________________________
-        q18_1,q18_2 = st.columns([1,1])
-        q18_gr = category_4.groupby(['Q18','Education_level']).size().unstack(fill_value=0)
-        with q18_1:
-            st.subheader('18. التحول الرقمي يسهم في توفير بيانات أفضل لمساعدة الشركات على التوسع عالميًا.')
-            st.dataframe(q18_gr,use_container_width=True)
-        with q18_2 :
-            st.plotly_chart(px.pie(category_4,names='Q18',title = 'النسبة %'),use_container_width=True)    
-        st.plotly_chart(px.bar(q18_gr , y=q18_gr.columns, barmode='group',title='النخصص مع عدد الموافقة',text_auto=True),use_container_width=True)
-        st.write('---')
     
-
-        #_______________________________________________________________________________
-        q19_1,q19_2 = st.columns([1,1])
-        q19_gr = category_4.groupby(['Q19','Education_level']).size().unstack(fill_value=0)
-        with q19_1:
-            st.subheader('19. تواجه الشركات التصديرية تحديات في التكيف مع التكنولوجيات الحديثة وسرعة التغيير.')
-            st.dataframe(q19_gr,use_container_width=True)
-        with q19_2 :
-            st.plotly_chart(px.pie(category_4,names='Q19',title = 'النسبة %'),use_container_width=True)    
-        st.plotly_chart(px.bar(q19_gr , y=q19_gr.columns, barmode='group',title='النخصص مع عدد الموافقة',text_auto=True),use_container_width=True)
-        st.write('---')
+                #_______________________________________________________________________________
+                q13_1,q13_2 = st.columns([1,1])
+                q13_gr = category_3.groupby(['Q13','Education_level']).size().unstack(fill_value=0)
+                with q13_1:
+                    st.subheader('13. الذكاء الاصطناعي يمكن أن يسهم في تحسين عمليات الإنتاج وتحقيق مخرجات عالية الجودة.')
+                    st.dataframe(q13_gr,use_container_width=True)
+                with q13_2 :
+                    st.plotly_chart(px.pie(category_3,names='Q13',title = 'النسبة %'),use_container_width=True)    
+                st.plotly_chart(px.bar(q13_gr , y=q13_gr.columns, barmode='group',title='النخصص مع عدد الموافقة',text_auto=True),use_container_width=True)
+                st.write('---')
+            
     
-
-        #_______________________________________________________________________________
-        q20_1,q20_2 = st.columns([1,1])
-        q20_gr = category_4.groupby(['Q20','Education_level']).size().unstack(fill_value=0)
-        with q20_1:
-            st.subheader('20. ضعف البنية التحتية الرقمية قد يحد من قدرة الشركات على المنافسة في الأسواق العالمية.')
-            st.dataframe(q20_gr,use_container_width=True)
-        with q20_2 :
-            st.plotly_chart(px.pie(category_4,names='Q20',title = 'النسبة %'),use_container_width=True)    
-        st.plotly_chart(px.bar(q20_gr , y=q20_gr.columns, barmode='group',title='النخصص مع عدد الموافقة',text_auto=True),use_container_width=True)
-        st.write('---')
+                #_______________________________________________________________________________
+                q14_1,q14_2 = st.columns([1,1])
+                q14_gr = category_3.groupby(['Q14','Education_level']).size().unstack(fill_value=0)
+                with q14_1:
+                    st.subheader('14. الذكاء الاصطناعي يسهم في تعزيز القدرة التنافسية للمنتجات المحلية في الأسواق العالمية.')
+                    st.dataframe(q14_gr,use_container_width=True)
+                with q14_2 :
+                    st.plotly_chart(px.pie(category_3,names='Q14',title = 'النسبة %'),use_container_width=True)    
+                st.plotly_chart(px.bar(q14_gr , y=q14_gr.columns, barmode='group',title='النخصص مع عدد الموافقة',text_auto=True),use_container_width=True)
+                st.write('---')
+            
     
-
-        #_______________________________________________________________________________
-        q21_1,q21_2 = st.columns([1,1])
-        q21_gr = category_4.groupby(['Q21','Education_level']).size().unstack(fill_value=0)
-        with q21_1:
-            st.subheader('21. التحول الرقمي يوفر للشركات فرصة للابتكار وزيادة كفاءة التصدير.')
-            st.dataframe(q21_gr,use_container_width=True)
-        with q21_2 :
-            st.plotly_chart(px.pie(category_4,names='Q21',title = 'النسبة %'),use_container_width=True)    
-        st.plotly_chart(px.bar(q21_gr , y=q21_gr.columns, barmode='group',title='النخصص مع عدد الموافقة',text_auto=True),use_container_width=True)
-        st.write('---')
+                #_______________________________________________________________________________
+                q15_1,q15_2 = st.columns([1,1])
+                q15_gr = category_3.groupby(['Q15','Education_level']).size().unstack(fill_value=0)
+                with q15_1:
+                    st.subheader('15. استخدام الذكاء الاصطناعي في التسويق الدولي يساعد في زيادة الطلب على المنتجات الوطنية.')
+                    st.dataframe(q15_gr,use_container_width=True)
+                with q15_2 :
+                    st.plotly_chart(px.pie(category_3,names='Q15',title = 'النسبة %'),use_container_width=True)    
+                st.plotly_chart(px.bar(q15_gr , y=q15_gr.columns, barmode='group',title='النخصص مع عدد الموافقة',text_auto=True),use_container_width=True)
+                st.write('---')
+            
     
+                #_______________________________________________________________________________
+                q16_1,q16_2 = st.columns([1,1])
+                q16_gr = category_3.groupby(['Q16','Education_level']).size().unstack(fill_value=0)
+                with q16_1:
+                    st.subheader('16. الذكاء الاصطناعي يسهم في دعم اللوجستيات وسلاسل التوريد لتسريع عمليات التصدير.')
+                    st.dataframe(q16_gr,use_container_width=True)
+                with q16_2 :
+                    st.plotly_chart(px.pie(category_3,names='Q16',title = 'النسبة %'),use_container_width=True)    
+                st.plotly_chart(px.bar(q16_gr , y=q16_gr.columns, barmode='group',title='النخصص مع عدد الموافقة',text_auto=True),use_container_width=True)
+                st.write('---')
+            
+    
+                #_______________________________________________________________________________
+                q17_1,q17_2 = st.columns([1,1])
+                q17_gr = category_3.groupby(['Q17','Education_level']).size().unstack(fill_value=0)
+                with q17_1:
+                    st.subheader('17. تطبيق الذكاء الاصطناعي في الصادرات الخدمية، مثل التجارة الإلكترونية، يوفر فرصًا جديدة للتوسع.')
+                    st.dataframe(q17_gr,use_container_width=True)
+                with q17_2 :
+                    st.plotly_chart(px.pie(category_3,names='Q17',title = 'النسبة %'),use_container_width=True)    
+                st.plotly_chart(px.bar(q17_gr , y=q17_gr.columns, barmode='group',title='النخصص مع عدد الموافقة',text_auto=True),use_container_width=True)
+                st.write('---')
+            with tabc4 :
+                st.header('التحديات والفرص في ظل التحول الرقمي')
+                st.write('هذا القسم يتكون من 5 اسالة')
+                st.write('---')
+    
+                #_______________________________________________________________________________
+                q18_1,q18_2 = st.columns([1,1])
+                q18_gr = category_4.groupby(['Q18','Education_level']).size().unstack(fill_value=0)
+                with q18_1:
+                    st.subheader('18. التحول الرقمي يسهم في توفير بيانات أفضل لمساعدة الشركات على التوسع عالميًا.')
+                    st.dataframe(q18_gr,use_container_width=True)
+                with q18_2 :
+                    st.plotly_chart(px.pie(category_4,names='Q18',title = 'النسبة %'),use_container_width=True)    
+                st.plotly_chart(px.bar(q18_gr , y=q18_gr.columns, barmode='group',title='النخصص مع عدد الموافقة',text_auto=True),use_container_width=True)
+                st.write('---')
+            
+    
+                #_______________________________________________________________________________
+                q19_1,q19_2 = st.columns([1,1])
+                q19_gr = category_4.groupby(['Q19','Education_level']).size().unstack(fill_value=0)
+                with q19_1:
+                    st.subheader('19. تواجه الشركات التصديرية تحديات في التكيف مع التكنولوجيات الحديثة وسرعة التغيير.')
+                    st.dataframe(q19_gr,use_container_width=True)
+                with q19_2 :
+                    st.plotly_chart(px.pie(category_4,names='Q19',title = 'النسبة %'),use_container_width=True)    
+                st.plotly_chart(px.bar(q19_gr , y=q19_gr.columns, barmode='group',title='النخصص مع عدد الموافقة',text_auto=True),use_container_width=True)
+                st.write('---')
+            
+    
+                #_______________________________________________________________________________
+                q20_1,q20_2 = st.columns([1,1])
+                q20_gr = category_4.groupby(['Q20','Education_level']).size().unstack(fill_value=0)
+                with q20_1:
+                    st.subheader('20. ضعف البنية التحتية الرقمية قد يحد من قدرة الشركات على المنافسة في الأسواق العالمية.')
+                    st.dataframe(q20_gr,use_container_width=True)
+                with q20_2 :
+                    st.plotly_chart(px.pie(category_4,names='Q20',title = 'النسبة %'),use_container_width=True)    
+                st.plotly_chart(px.bar(q20_gr , y=q20_gr.columns, barmode='group',title='النخصص مع عدد الموافقة',text_auto=True),use_container_width=True)
+                st.write('---')
+            
+    
+                #_______________________________________________________________________________
+                q21_1,q21_2 = st.columns([1,1])
+                q21_gr = category_4.groupby(['Q21','Education_level']).size().unstack(fill_value=0)
+                with q21_1:
+                    st.subheader('21. التحول الرقمي يوفر للشركات فرصة للابتكار وزيادة كفاءة التصدير.')
+                    st.dataframe(q21_gr,use_container_width=True)
+                with q21_2 :
+                    st.plotly_chart(px.pie(category_4,names='Q21',title = 'النسبة %'),use_container_width=True)    
+                st.plotly_chart(px.bar(q21_gr , y=q21_gr.columns, barmode='group',title='النخصص مع عدد الموافقة',text_auto=True),use_container_width=True)
+                st.write('---')
+            
+    
+                #_______________________________________________________________________________
+                q22_1,q22_2 = st.columns([1,1])
+                q22_gr = category_4.groupby(['Q22','Education_level']).size().unstack(fill_value=0)
+                with q22_1:
+                    st.subheader('22. هناك حاجة إلى تحسين سياسات حماية البيانات لدعم الصادرات في ظل التحول الرقمي.')
+                    st.dataframe(q22_gr,use_container_width=True)
+                with q22_2 :
+                    st.plotly_chart(px.pie(category_4,names='Q22',title = 'النسبة %'),use_container_width=True)    
+                st.plotly_chart(px.bar(q22_gr , y=q22_gr.columns, barmode='group',title='النخصص مع عدد الموافقة',text_auto=True),use_container_width=True)
+                st.write('---')
+            #______________________________________________________________________________________________________________________    
+            with tabc5 :
+                st.header('الاحصائيات الاجمالية')    
+                full_votes = get_votes(df[df.columns[5:]])
+                st.subheader('احصائيات المشاركون')
+                co1 , co2, co3 = st.columns([1,0.2,1])
+                with co1 :
+                    st.subheader('احصائيات الحالة والدراسات') 
+                    st.dataframe(Participants.describe(include='object'))
+                    age = Participants[['Age']].describe()
+                    st.subheader('احصائيات العمر')
+                    st.dataframe(age.transpose())
+                with co3 :
+                    st.plotly_chart(px.pie(Participants,names='status',title='نسب الحالة التعليمية'),use_container_width=True)
+                st.plotly_chart(px.histogram(Participants,'Education_level',color = 'Education_level',text_auto=True,title='عدد الطلاب بالنسبة لكل دراسة'),use_container_width=True)
+                st.write('---')
+                st.subheader('احصائيات الموافقة والرفض الاجمالية')
+            
+                col1 ,col3 = st.columns([1,1])
+                with col1 :
+                    st.plotly_chart(px.histogram(full_votes,x = 'votes',color = 'votes',text_auto = True,title = "الاعداد"),use_container_width=True)
+                with col3 :
+                    st.plotly_chart(px.pie(full_votes,names='votes',title ='النسب'),use_container_width=True)
+                st.write('---')
+            
+            
+            #_______________________________________________    
+                st.header('الاحصائيات الاجمالية لكل قسم في الاستبيان')
+            
+                st.subheader("القسم الاول: اهمية الصادرات")
+                st.write('---')
+                cat1_votes = get_votes(category_1[category_1.columns[5:]])
+                c1 ,c2 = st.columns([1,1])
+                with c1 :
+                    st.plotly_chart(px.histogram(cat1_votes,x = 'votes',color = 'votes',text_auto = True,title = "الاعداد"),use_container_width=True)
+                with c2:
+                    st.plotly_chart(px.pie(cat1_votes,names='votes',title ='النسب'),use_container_width=True)
+                st.write('---')
+            
+            #__________________________________________________
+                st.subheader("القسم الثاني:الذكاء الاصطناعي كعامل تطور")
+                st.write('---')
+                cat2_votes = get_votes(category_2[category_2.columns[5:]])
+                c12 ,c22 = st.columns([1,1])
+                with c12 :
+                    st.plotly_chart(px.histogram(cat2_votes,x = 'votes',color = 'votes',text_auto = True,title = "الاعداد"),use_container_width=True)
+                with c22:
+                    st.plotly_chart(px.pie(cat2_votes,names='votes',title ='النسب'),use_container_width=True)
+                st.write('---')
+            #______________________________________________________
+                st.subheader("القسم الثالث:تأثير الذكاء الاصطناعي على الصادرات")
+                st.write('---')
+                cat3_votes = get_votes(category_3[category_3.columns[5:]])
+                c13 ,c23 = st.columns([1,1])
+                with c13 :
+                    st.plotly_chart(px.histogram(cat3_votes,x = 'votes',color = 'votes',text_auto = True,title = "الاعداد"),use_container_width=True)
+                with c23:
+                    st.plotly_chart(px.pie(cat3_votes,names='votes',title ='النسب'),use_container_width=True)
+                st.write('---')
+            #________________________________________________
+                st.subheader("القسم الرابع:التحديات والفرص في ظل التحول الرقمي")
+                st.write('---')
+                cat4_votes = get_votes(category_4[category_4.columns[5:]])
+                c14 ,c24 = st.columns([1,1])
+                with c14 :
+                    st.plotly_chart(px.histogram(cat4_votes,x = 'votes',color = 'votes',text_auto = True,title = "الاعداد"),use_container_width=True)
+                with c24:
+                    st.plotly_chart(px.pie(cat4_votes,names='votes',title ='النسب'),use_container_width=True)
+                st.write('---') 
+#______________________________________________________________________________________________________________________________________________________
+    elif but2:
+        with ta3 :
+            tabc1 , tabc2 , tabc3, tabc4 = st.tabs(['القسم الاول:اهمية الصادرات','القسم الثاني:الذكاء الاصطناعي كعامل تطور','القسم الثالث:تاثير الذكاء الاصطناعي علر الصادرات','القسم الربع:التحديات والفرص في ظل التحول الرقمي'])
+            for df in [category_1,category_2,category_3,category_4]:
+                return_no_df(df)
 
-        #_______________________________________________________________________________
-        q22_1,q22_2 = st.columns([1,1])
-        q22_gr = category_4.groupby(['Q22','Education_level']).size().unstack(fill_value=0)
-        with q22_1:
-            st.subheader('22. هناك حاجة إلى تحسين سياسات حماية البيانات لدعم الصادرات في ظل التحول الرقمي.')
-            st.dataframe(q22_gr,use_container_width=True)
-        with q22_2 :
-            st.plotly_chart(px.pie(category_4,names='Q22',title = 'النسبة %'),use_container_width=True)    
-        st.plotly_chart(px.bar(q22_gr , y=q22_gr.columns, barmode='group',title='النخصص مع عدد الموافقة',text_auto=True),use_container_width=True)
-        st.write('---')
+            def cronbach_alpha(df):
+                df = df[df.columns[2:]]
+                    
+                k = df.shape[1]
+                item_variances = df.var(axis=0, ddof=1)
+                total_variance = df.sum(axis=1).var(ddof=1)
+                alpha = (k / (k - 1)) * (1 - (item_variances.sum() / total_variance))
+                return alpha
+            
+            #______________________________________________________________________________________________________________        
+            with tabc1:
+                st.header("القسم الاول: اهمية الصادرات")
+                st.write('هذا القسم يتكون من 6 اسئلة')
+                st.write('---')
+                st.write('احصائيات القسم')
+                descriptive_1 = category_1.describe(include='number')
+                descriptive_1.drop('ResponseID',axis=1,inplace=True)
+                descriptive_1.at['Cronbach_alpha','Full_data'] = cronbach_alpha(category_1)
+                descriptive_1.fillna('َ')
+                st.write(descriptive_1,use_container_width=True)
+    
+    
+                #_________________________________________________________________________________
+                st.subheader('1. تعتبر الصادرات من أهم ركائز الاقتصاد القومي.')
+                st.plotly_chart(px.scatter(category_1,x=['Q1'],title='توزيع البيانات'),use_container_width=True)
+                st.plotly_chart(px.histogram(category_1,x=['Q1','status'],barmode='group',color='Q1',title='عدد الموافقة في حالة الطالب Vs عدد الموافقة في حالة الخريج'),use_container_width=True)
+                st.plotly_chart(px.pie(category_1,names='Q1',title='النسب الاجمالية'),use_container_width=True)
+                st.write('---')
+    
+    
+                #_________________________________________________________________________________
+                st.subheader('2. الصادرات تساهم بشكل كبير في توفير العملات الأجنبية للدولة.')
+                st.plotly_chart(px.scatter(category_1,x=['Q2'],title='توزيع البيانات'),use_container_width=True)
+                st.plotly_chart(px.histogram(category_1,x=['Q2','status'],barmode='group',color='Q2',title='عدد الموافقة في حالة الطالب Vs عدد الموافقة في حالة الخريج'),use_container_width=True)
+                st.plotly_chart(px.pie(category_1,names='Q2',title='النسب الاجمالية'),use_container_width=True)
+                st.write('---')
+    
+    
+                #_________________________________________________________________________________
+                st.subheader('3. الصادرات الصناعية تسهم في تحسين جودة المنتجات الوطنية.')
+                st.plotly_chart(px.scatter(category_1,x=['Q3'],title='توزيع البيانات'),use_container_width=True)
+                st.plotly_chart(px.histogram(category_1,x=['Q3','status'],barmode='group',color='Q3',title='عدد الموافقة في حالة الطالب Vs عدد الموافقة في حالة الخريج'),use_container_width=True)
+                st.plotly_chart(px.pie(category_1,names='Q3',title='النسب الاجمالية'),use_container_width=True)
+                st.write('---')
+    
+    
+                #_________________________________________________________________________________
+                st.subheader('4. تؤدي الصادرات الصناعية إلى زيادة فرص العمل ودعم القوى العاملة المحلية.')
+                st.plotly_chart(px.scatter(category_1,x=['Q4'],title='توزيع البيانات'),use_container_width=True)
+                st.plotly_chart(px.histogram(category_1,x=['Q4','status'],barmode='group',color='Q4',title='عدد الموافقة في حالة الطالب Vs عدد الموافقة في حالة الخريج'),use_container_width=True)
+                st.plotly_chart(px.pie(category_1,names='Q4',title='النسب الاجمالية'),use_container_width=True)
+                st.write('---')
+    
+    
+                #_________________________________________________________________________________
+                st.subheader('5. الصادرات الخدمية، مثل السياحة وتكنولوجيا المعلومات، تساهم في تعزيز سمعة الدولة عالميًا.')
+                st.plotly_chart(px.scatter(category_1,x=['Q5'],title='توزيع البيانات'),use_container_width=True)
+                st.plotly_chart(px.histogram(category_1,x=['Q5','status'],barmode='group',color='Q5',title='عدد الموافقة في حالة الطالب Vs عدد الموافقة في حالة الخريج'),use_container_width=True)
+                st.plotly_chart(px.pie(category_1,names='Q5',title='النسب الاجمالية'),use_container_width=True)
+                st.write('---')
+    
+    
+                #_________________________________________________________________________________
+                st.subheader('6. الدول التي تعتمد على تنوع في الصادرات تكون أقل عرضة لتقلبات الاقتصاد العالمي.')
+                st.plotly_chart(px.scatter(category_1,x=['Q6'],title='توزيع البيانات'),use_container_width=True)
+                st.plotly_chart(px.histogram(category_1,x=['Q6','status'],barmode='group',color='Q6',title='عدد الموافقة في حالة الطالب Vs عدد الموافقة في حالة الخريج'),use_container_width=True)
+                st.plotly_chart(px.pie(category_1,names='Q6',title='النسب الاجمالية'),use_container_width=True)
+                st.write('---')
+    
+    
+            #______________________________________________________________________________________________________________        
+            with tabc2:
+                st.header("القسم الثاني: الذكاء الاصطناعي كعامل تطور")
+                st.write('هذا القسم يتكون من 6 اسئلة')
+                st.write('---')  
+                st.write('احصائيات القسم')
+                descriptive_2 = category_2.describe(include='number')
+                descriptive_2.drop('ResponseID',axis=1,inplace=True)
+                descriptive_2.at['Cronbach_alpha','Full_data'] = cronbach_alpha(category_2)
+                descriptive_2.fillna('َ')
+                st.write(descriptive_2,use_container_width=True)
+            
+    
+                #_________________________________________________________________________________
+                st.subheader('7. الذكاء الاصطناعي سيحدث تغييرات جذرية في قطاعات متعددة، منها القطاع الصناعي.')
+                st.plotly_chart(px.scatter(category_2,x=['Q7'],title='توزيع البيانات'),use_container_width=True)
+                st.plotly_chart(px.histogram(category_2,x=['Q7','status'],barmode='group',color='Q7',title='عدد الموافقة في حالة الطالب Vs عدد الموافقة في حالة الخريج'),use_container_width=True)
+                st.plotly_chart(px.pie(category_2,names='Q7',title='النسب الاجمالية'),use_container_width=True)
+                st.write('---')
+    
+    
+                #_________________________________________________________________________________
+                st.subheader('8. الذكاء الاصطناعي سيساهم في تطوير تقنيات الإنتاج، مما يؤدي إلى تحسين جودة المنتجات.')
+                st.plotly_chart(px.scatter(category_2,x=['Q8'],title='توزيع البيانات'),use_container_width=True)
+                st.plotly_chart(px.histogram(category_2,x=['Q8','status'],barmode='group',color='Q8',title='عدد الموافقة في حالة الطالب Vs عدد الموافقة في حالة الخريج'),use_container_width=True)
+                st.plotly_chart(px.pie(category_2,names='Q8',title='النسب الاجمالية'),use_container_width=True)
+                st.write('---')
+    
+    
+                #_________________________________________________________________________________
+                st.subheader('9. الذكاء الاصطناعي يوفر إمكانيات كبيرة للتنبؤ بالاتجاهات السوقية ودراسة احتياجات العملاء.')
+                st.plotly_chart(px.scatter(category_2,x=['Q9'],title='توزيع البيانات'),use_container_width=True)
+                st.plotly_chart(px.histogram(category_2,x=['Q9','status'],barmode='group',color='Q9',title='عدد الموافقة في حالة الطالب Vs عدد الموافقة في حالة الخريج'),use_container_width=True)
+                st.plotly_chart(px.pie(category_2,names='Q9',title='النسب الاجمالية'),use_container_width=True)
+                st.write('---')
+    
+    
+                #_________________________________________________________________________________
+                st.subheader('10. استخدام الذكاء الاصطناعي في الصادرات قد يساعد في تقليل المخاطر المالية.')
+                st.plotly_chart(px.scatter(category_2,x=['Q10'],title='توزيع البيانات'),use_container_width=True)
+                st.plotly_chart(px.histogram(category_2,x=['Q10','status'],barmode='group',color='Q10',title='عدد الموافقة في حالة الطالب Vs عدد الموافقة في حالة الخريج'),use_container_width=True)
+                st.plotly_chart(px.pie(category_2,names='Q10',title='النسب الاجمالية'),use_container_width=True)
+                st.write('---')
+    
+    
+                #_________________________________________________________________________________
+                st.subheader('11. الذكاء الاصطناعي قد يزيد من التفاوت الاجتماعي بسبب التأثير على بعض المهن التقليدية.')
+                st.plotly_chart(px.scatter(category_2,x=['Q11'],title='توزيع البيانات'),use_container_width=True)
+                st.plotly_chart(px.histogram(category_2,x=['Q11','status'],barmode='group',color='Q11',title='عدد الموافقة في حالة الطالب Vs عدد الموافقة في حالة الخريج'),use_container_width=True)
+                st.plotly_chart(px.pie(category_2,names='Q11',title='النسب الاجمالية'),use_container_width=True)
+                st.write('---')
+    
+    
+                #_________________________________________________________________________________
+                st.subheader('12. الذكاء الاصطناعي يجب أن يُستثمر لتطوير موارد بشرية قادرة على التكيف مع التكنولوجيا.')
+                st.plotly_chart(px.scatter(category_2,x=['Q12'],title='توزيع البيانات'),use_container_width=True)
+                st.plotly_chart(px.histogram(category_2,x=['Q12','status'],barmode='group',color='Q12',title='عدد الموافقة في حالة الطالب Vs عدد الموافقة في حالة الخريج'),use_container_width=True)
+                st.plotly_chart(px.pie(category_2,names='Q12',title='النسب الاجمالية'),use_container_width=True)
+                st.write('---')
+    
+    
+            #______________________________________________________________________________________________________________        
+            with tabc3 :
+                st.header("القسم الثالث:تاثير الذكاء الاصطناعي علر الصادرات")
+                st.write('هذا القسم يتكون من 5 اسالة')
+                st.write('---')
+                st.write('احصائيات القسم')
+                descriptive_3 = category_3.describe(include='number')
+                descriptive_3.drop('ResponseID',axis=1,inplace=True)
+                descriptive_3.at['Cronbach_alpha','Full_data'] = cronbach_alpha(category_3)
+                descriptive_3.fillna('َ')
+                st.write(descriptive_3,use_container_width=True)
+                
+    
+    
+                #_________________________________________________________________________________
+                st.subheader('13. الذكاء الاصطناعي يمكن أن يسهم في تحسين عمليات الإنتاج وتحقيق مخرجات عالية الجودة.')
+                st.plotly_chart(px.scatter(category_3,x=['Q13'],title='توزيع البيانات'),use_container_width=True)
+                st.plotly_chart(px.histogram(category_3,x=['Q13','status'],barmode='group',color='Q13',title='عدد الموافقة في حالة الطالب Vs عدد الموافقة في حالة الخريج'),use_container_width=True)
+                st.plotly_chart(px.pie(category_3,names='Q13',title='النسب الاجمالية'),use_container_width=True)
+                st.write('---')
+    
+    
+                #_________________________________________________________________________________
+                st.subheader('14. الذكاء الاصطناعي يسهم في تعزيز القدرة التنافسية للمنتجات المحلية في الأسواق العالمية.')
+                st.plotly_chart(px.scatter(category_3,x=['Q14'],title='توزيع البيانات'),use_container_width=True)
+                st.plotly_chart(px.histogram(category_3,x=['Q14','status'],barmode='group',color='Q14',title='عدد الموافقة في حالة الطالب Vs عدد الموافقة في حالة الخريج'),use_container_width=True)
+                st.plotly_chart(px.pie(category_3,names='Q14',title='النسب الاجمالية'),use_container_width=True)
+                st.write('---')
+    
+    
+                #_________________________________________________________________________________
+                st.subheader('15. استخدام الذكاء الاصطناعي في التسويق الدولي يساعد في زيادة الطلب على المنتجات الوطنية.')
+                st.plotly_chart(px.scatter(category_3,x=['Q15'],title='توزيع البيانات'),use_container_width=True)
+                st.plotly_chart(px.histogram(category_3,x=['Q15','status'],barmode='group',color='Q15',title='عدد الموافقة في حالة الطالب Vs عدد الموافقة في حالة الخريج'),use_container_width=True)
+                st.plotly_chart(px.pie(category_3,names='Q15',title='النسب الاجمالية'),use_container_width=True)
+                st.write('---')
+    
+    
+                #_________________________________________________________________________________
+                st.subheader('16. الذكاء الاصطناعي يسهم في دعم اللوجستيات وسلاسل التوريد لتسريع عمليات التصدير.')
+                st.plotly_chart(px.scatter(category_3,x=['Q16'],title='توزيع البيانات'),use_container_width=True)
+                st.plotly_chart(px.histogram(category_3,x=['Q16','status'],barmode='group',color='Q16',title='عدد الموافقة في حالة الطالب Vs عدد الموافقة في حالة الخريج'),use_container_width=True)
+                st.plotly_chart(px.pie(category_3,names='Q16',title='النسب الاجمالية'),use_container_width=True)
+                st.write('---')
+    
+    
+                #_________________________________________________________________________________
+                st.subheader('17. تطبيق الذكاء الاصطناعي في الصادرات الخدمية، مثل التجارة الإلكترونية، يوفر فرصًا جديدة للتوسع.')
+                st.plotly_chart(px.scatter(category_3,x=['Q17'],title='توزيع البيانات'),use_container_width=True)
+                st.plotly_chart(px.histogram(category_3,x=['Q17','status'],barmode='group',color='Q17',title='عدد الموافقة في حالة الطالب Vs عدد الموافقة في حالة الخريج'),use_container_width=True)
+                st.plotly_chart(px.pie(category_3,names='Q17',title='النسب الاجمالية'),use_container_width=True)
+                st.write('---')
+    
+    
+            #______________________________________________________________________________________________________________        
+            with tabc4 :
+                st.header("القسم الربع:التحديات والفرص في ظل التحول الرقمي")
+                st.write('هذا القسم يتكون من 6 اسالة')
+                st.write('---')
+                st.write('احصائيات القسم')
+                descriptive_4 = category_4.describe(include='number')
+                descriptive_4.drop('ResponseID',axis=1,inplace=True)
+                descriptive_4.at['Cronbach_alpha','Full_data'] = cronbach_alpha(category_4)
+                descriptive_4.fillna('َ')
+                st.write(descriptive_4,use_container_width=True)
+    
+    
+                #_________________________________________________________________________________
+                st.subheader('18. التحول الرقمي يسهم في توفير بيانات أفضل لمساعدة الشركات على التوسع عالميًا.')
+                st.plotly_chart(px.scatter(category_4,x=['Q18'],title='توزيع البيانات'),use_container_width=True)
+                st.plotly_chart(px.histogram(category_4,x=['Q18','status'],barmode='group',color='Q18',title='عدد الموافقة في حالة الطالب Vs عدد الموافقة في حالة الخريج'),use_container_width=True)
+                st.plotly_chart(px.pie(category_4,names='Q18',title='النسب الاجمالية'),use_container_width=True)
+                st.write('---')
+    
+    
+                #_________________________________________________________________________________
+                st.subheader('19. تواجه الشركات التصديرية تحديات في التكيف مع التكنولوجيات الحديثة وسرعة التغيير.')
+                st.plotly_chart(px.scatter(category_4,x=['Q19'],title='توزيع البيانات'),use_container_width=True)
+                st.plotly_chart(px.histogram(category_4,x=['Q19','status'],barmode='group',color='Q19',title='عدد الموافقة في حالة الطالب Vs عدد الموافقة في حالة الخريج'),use_container_width=True)
+                st.plotly_chart(px.pie(category_4,names='Q19',title='النسب الاجمالية'),use_container_width=True)
+                st.write('---')
+    
+    
+                #_________________________________________________________________________________
+                st.subheader('20. ضعف البنية التحتية الرقمية قد يحد من قدرة الشركات على المنافسة في الأسواق العالمية.')
+                st.plotly_chart(px.scatter(category_4,x=['Q20'],title='توزيع البيانات'),use_container_width=True)
+                st.plotly_chart(px.histogram(category_4,x=['Q20','status'],barmode='group',color='Q20',title='عدد الموافقة في حالة الطالب Vs عدد الموافقة في حالة الخريج'),use_container_width=True)
+                st.plotly_chart(px.pie(category_4,names='Q20',title='النسب الاجمالية'),use_container_width=True)
+                st.write('---')
+    
+    
+                #_________________________________________________________________________________
+                st.subheader('21. التحول الرقمي يوفر للشركات فرصة للابتكار وزيادة كفاءة التصدير.')
+                st.plotly_chart(px.scatter(category_4,x=['Q21'],title='توزيع البيانات'),use_container_width=True)
+                st.plotly_chart(px.histogram(category_4,x=['Q21','status'],barmode='group',color='Q21',title='عدد الموافقة في حالة الطالب Vs عدد الموافقة في حالة الخريج'),use_container_width=True)
+                st.plotly_chart(px.pie(category_4,names='Q21',title='النسب الاجمالية'),use_container_width=True)
+                st.write('---')
+    
+    
+                #_________________________________________________________________________________
+                st.subheader('22. هناك حاجة إلى تحسين سياسات حماية البيانات لدعم الصادرات في ظل التحول الرقمي.')
+                st.plotly_chart(px.scatter(category_4,x=['Q22'],title='توزيع البيانات'),use_container_width=True)
+                st.plotly_chart(px.histogram(category_4,x=['Q22','status'],barmode='group',color='Q22',title='عدد الموافقة في حالة الطالب Vs عدد الموافقة في حالة الخريج'),use_container_width=True)
+                st.plotly_chart(px.pie(category_4,names='Q22',title='النسب الاجمالية'),use_container_width=True)
+                st.write('---')
